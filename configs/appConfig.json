@@ -1,0 +1,10 @@
+{
+  "mode": "development",
+  "mongoDB": {
+    "uri": "mongodb://127.0.0.1:27017",
+    "database": "dex_db",
+    "options": {
+      "readPreference": "primary"
+    }
+  }
+}
