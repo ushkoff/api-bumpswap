@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Exchange } from './schemas';
-import { AddLiquidityDto, CreateExchangeDto, GetAmountDto } from './dto';
+import { AddLiquidityDto, CreateExchangeDto, GetAmountDto, MakeSwapDto } from './dto';
 import { ExchangesRepository } from './exchanges.repository';
 import { TokensRepository } from '../tokens/tokens.repository';
 
@@ -42,5 +42,27 @@ export class ExchangesService {
 
   async getTokenAmount(id: string, data: GetAmountDto) {
     return this.exchangesRepository.getTokenAmount(id, data);
+  }
+
+  async ethToTokenSwap(id: string, data: MakeSwapDto): Promise<Exchange> {
+    const tokenAmount = await this.exchangesRepository.getTokenAmount(id, { amount: data.amount });
+
+    const token = await this.tokensRepository.getById(data.tokenId);
+    this.tokensRepository.update(data.tokenId, { totalSupply: token.totalSupply + Number(tokenAmount) });
+    const eth = await this.tokensRepository.getById(data.ethId);
+    this.tokensRepository.update(data.ethId, { totalSupply: eth.totalSupply - data.amount });
+
+    return this.exchangesRepository.ethToTokenSwap(id, data, Number(tokenAmount));
+  }
+
+  async tokenToEthSwap(id: string, data: MakeSwapDto): Promise<Exchange> {
+    const ethAmount = await this.exchangesRepository.getEthAmount(id, { amount: data.amount });
+
+    const token = await this.tokensRepository.getById(data.tokenId);
+    this.tokensRepository.update(data.tokenId, { totalSupply: token.totalSupply - data.amount });
+    const eth = await this.tokensRepository.getById(data.ethId);
+    this.tokensRepository.update(data.ethId, { totalSupply: eth.totalSupply + Number(ethAmount) });
+
+    return this.exchangesRepository.tokenToEthSwap(id, data, Number(ethAmount));
   }
 }

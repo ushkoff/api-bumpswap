@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Exchange, ExchangeDocument } from './schemas';
 import { Model } from 'mongoose';
-import { AddLiquidityDto, CreateExchangeDto, GetAmountDto } from './dto';
+import { AddLiquidityDto, CreateExchangeDto, GetAmountDto, MakeSwapDto } from './dto';
 
 @Injectable()
 export class ExchangesRepository {
@@ -127,6 +127,50 @@ export class ExchangesRepository {
       return (data.amount * tokenBalance) / (ethBalance + data.amount);
     } catch (e) {
       throw new Error('Error at get amount');
+    }
+  }
+
+  async ethToTokenSwap(id: string, data: MakeSwapDto, tokenAmount: number) {
+    try {
+      const exchange = await this.exchangeModel.findById(id);
+
+      const tokenBalance = exchange.tokenBalance;
+      const ethBalance = exchange.ethBalance;
+
+      if (tokenBalance === 0 || ethBalance === 0) {
+        throw new Error('Error at make trade: reserves are empty');
+      }
+
+      Object.assign(exchange, {
+        ethBalance: exchange.ethBalance + data.amount,
+        tokenBalance: exchange.tokenBalance - tokenAmount,
+      });
+      const updatedExchange = await exchange.save();
+      return updatedExchange.toObject();
+    } catch (e) {
+      throw new Error('Error at make trade');
+    }
+  }
+
+  async tokenToEthSwap(id: string, data: MakeSwapDto, ethAmount: number) {
+    try {
+      const exchange = await this.exchangeModel.findById(id);
+
+      const tokenBalance = exchange.tokenBalance;
+      const ethBalance = exchange.ethBalance;
+
+      if (tokenBalance === 0 || ethBalance === 0) {
+        throw new Error('Error at make trade: reserves are empty');
+      }
+
+      Object.assign(exchange, {
+        ethBalance: exchange.ethBalance - ethAmount,
+        tokenBalance: exchange.tokenBalance + data.amount,
+      });
+      const updatedExchange = await exchange.save();
+      return updatedExchange.toObject();
+    } catch (e) {
+      throw new Error('Error at make trade');
     }
   }
 }
