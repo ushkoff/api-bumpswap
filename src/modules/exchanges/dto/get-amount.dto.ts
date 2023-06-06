@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
 
-export class UpdateTokenDto {
+export class GetAmountDto {
   @IsNotEmpty()
   @IsNumber()
-  readonly totalSupply: number;
+  readonly amount: number;
 }

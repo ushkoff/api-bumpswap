@@ -20,7 +20,7 @@ export class UsersRepository {
   async create(user: CreateUserDto): Promise<User> {
     try {
       const newUser = new this.userModel(user);
-      newUser.LP_tokens = "";
+      newUser.LP_tokens = "[]";
       const savedUser = await newUser.save();
       return savedUser.toObject();
     } catch (error) {

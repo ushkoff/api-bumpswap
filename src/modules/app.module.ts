@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from './config';
 import { TokensModule } from './tokens';
 import { UsersModule } from './users';
+import { ExchangesModule } from './exchanges';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { UsersModule } from './users';
       })
     }),
     TokensModule,
-    UsersModule
+    UsersModule,
+    ExchangesModule
   ],
   controllers: [],
   providers: [],

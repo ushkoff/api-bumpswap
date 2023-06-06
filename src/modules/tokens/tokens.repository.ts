@@ -26,6 +26,15 @@ export class TokensRepository {
     }
   }
 
+  async getById(id: string): Promise<Token> {
+    try {
+      return await this.tokenModel.findById(id).lean().exec();
+    } catch (error) {
+      throw new Error('Failed to fetch token.');
+    }
+  }
+
+
   async update(id: string, data: UpdateTokenDto): Promise<Token> {
     try {
       const token = await this.tokenModel.findById(id);
