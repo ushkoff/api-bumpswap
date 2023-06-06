@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Exchange } from './schemas';
-import { AddLiquidityDto, CreateExchangeDto, GetAmountDto, MakeSwapDto } from './dto';
+import { AddLiquidityDto, CreateExchangeDto, GetAmountDto, MakeSwapDto, TokenToTokenSwapDto } from './dto';
 import { ExchangesRepository } from './exchanges.repository';
 import { TokensRepository } from '../tokens/tokens.repository';
 
@@ -59,10 +59,28 @@ export class ExchangesService {
     const ethAmount = await this.exchangesRepository.getEthAmount(id, { amount: data.amount });
 
     const token = await this.tokensRepository.getById(data.tokenId);
-    this.tokensRepository.update(data.tokenId, { totalSupply: token.totalSupply - data.amount });
+    await this.tokensRepository.update(data.tokenId, { totalSupply: token.totalSupply - data.amount });
     const eth = await this.tokensRepository.getById(data.ethId);
-    this.tokensRepository.update(data.ethId, { totalSupply: eth.totalSupply + Number(ethAmount) });
+    await this.tokensRepository.update(data.ethId, { totalSupply: eth.totalSupply + Number(ethAmount) });
 
     return this.exchangesRepository.tokenToEthSwap(id, data, Number(ethAmount));
+  }
+
+  async tokenToTokenSwap(id: string, data: TokenToTokenSwapDto): Promise<Exchange> {
+    const trade1 = await this.tokenToEthSwap(id, { amount: data.amount, tokenId: data.token1_id, ethId: data.ethId });
+    const ethAmount = await this.getEthAmount(id, { amount: data.amount });
+    console.log(trade1)
+    console.log(ethAmount);
+    const trade2 = await this.ethToTokenSwap(id, { amount: Number(ethAmount), ethId: data.ethId, tokenId: data.token2_id });
+    const tokenAmount = await this.getTokenAmount(id, { amount: Number(ethAmount) });
+    console.log(trade2);
+    console.log(tokenAmount);
+
+    const token1 = await this.tokensRepository.getById(data.token1_id);
+    await this.tokensRepository.update(data.token1_id, { totalSupply: token1.totalSupply - data.amount });
+    const token2 = await this.tokensRepository.getById(data.token2_id);
+    await this.tokensRepository.update(data.token1_id, { totalSupply: token2.totalSupply + Number(tokenAmount) });
+
+    return trade2;
   }
 }

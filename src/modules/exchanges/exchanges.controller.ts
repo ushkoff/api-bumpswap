@@ -8,7 +8,7 @@ import {
   Request, Param
 } from '@nestjs/common';
 
-import { CreateExchangeDto, AddLiquidityDto, GetAmountDto, MakeSwapDto } from './dto';
+import { CreateExchangeDto, AddLiquidityDto, GetAmountDto, MakeSwapDto, TokenToTokenSwapDto } from './dto';
 import { ExchangesService } from './exchanges.service';
 import { Exchange } from './schemas';
 
@@ -87,5 +87,14 @@ export class ExchangesController {
     @Body() body: MakeSwapDto
   ): Promise<Exchange> {
     return this.exchangesService.tokenToEthSwap(id, body);
+  }
+
+  @Post('/token-to-token/')
+  @HttpCode(HttpStatus.OK)
+  async tokenToTokenSwap(
+    @Param('id') id: string,
+    @Body() body: TokenToTokenSwapDto
+  ): Promise<Exchange> {
+    return this.exchangesService.tokenToTokenSwap(id, body);
   }
 }
