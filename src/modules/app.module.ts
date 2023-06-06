@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from './config';
 import { TokensModule } from './tokens';
+import { UsersModule } from './users';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { TokensModule } from './tokens';
         uri: `${cfg.mongoDBConfig.uri}/${cfg.mongoDBConfig.database}?readPreference=${cfg.mongoDBConfig.options.readPreference}`
       })
     }),
-    TokensModule
+    TokensModule,
+    UsersModule
   ],
   controllers: [],
   providers: [],
