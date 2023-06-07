@@ -110,6 +110,31 @@ export class ExchangesRepository {
     }
   }
 
+  async getEthAmountSlippage(id: string, data: GetAmountDto) {
+    try {
+      const exchange = await this.exchangeModel.findById(id);
+
+      const tokenBalance = exchange.tokenBalance;
+      const ethBalance = exchange.ethBalance;
+
+      if (tokenBalance === 0 || ethBalance === 0) {
+        return {
+          tokenPrice: -1,
+          ethPrice: -1
+        }
+      }
+
+      const priceInTokens = (data.amount * ethBalance) / (tokenBalance + data.amount)
+
+      return {
+        price: priceInTokens,
+        slippage: (ethBalance / tokenBalance) * data.amount - priceInTokens
+      };
+    } catch (e) {
+      throw new Error('Error at get amount');
+    }
+  }
+
   async getTokenAmount(id: string, data: GetAmountDto) {
     try {
       const exchange = await this.exchangeModel.findById(id);
@@ -125,6 +150,31 @@ export class ExchangesRepository {
       }
 
       return (data.amount * tokenBalance) / (ethBalance + data.amount);
+    } catch (e) {
+      throw new Error('Error at get amount');
+    }
+  }
+
+  async getTokenAmountSlippage(id: string, data: GetAmountDto) {
+    try {
+      const exchange = await this.exchangeModel.findById(id);
+
+      const tokenBalance = exchange.tokenBalance;
+      const ethBalance = exchange.ethBalance;
+
+      if (tokenBalance === 0 || ethBalance === 0) {
+        return {
+          tokenPrice: -1,
+          ethPrice: -1
+        }
+      }
+
+      const priceInEths = (data.amount * tokenBalance) / (ethBalance + data.amount)
+
+      return {
+        price: priceInEths,
+        slippage: (tokenBalance / ethBalance) * data.amount - priceInEths
+      };
     } catch (e) {
       throw new Error('Error at get amount');
     }

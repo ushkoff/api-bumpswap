@@ -40,8 +40,16 @@ export class ExchangesService {
     return this.exchangesRepository.getEthAmount(id, data);
   }
 
+  async getEthAmountSlippage(id: string, data: GetAmountDto) {
+    return this.exchangesRepository.getEthAmountSlippage(id, data);
+  }
+
   async getTokenAmount(id: string, data: GetAmountDto) {
     return this.exchangesRepository.getTokenAmount(id, data);
+  }
+
+  async getTokenAmountSlippage(id: string, data: GetAmountDto) {
+    return this.exchangesRepository.getTokenAmountSlippage(id, data);
   }
 
   async ethToTokenSwap(id: string, data: MakeSwapDto): Promise<Exchange> {

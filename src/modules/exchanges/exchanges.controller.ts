@@ -62,6 +62,15 @@ export class ExchangesController {
     return this.exchangesService.getEthAmount(id, body);
   }
 
+  @Get('/eth-amount/slippage/:id')
+  @HttpCode(HttpStatus.OK)
+  async getEthAmountSlippage(
+    @Param('id') id: string,
+    @Body() body: GetAmountDto
+  ): Promise<any> {
+    return this.exchangesService.getEthAmountSlippage(id, body);
+  }
+
   @Get('/token-amount/:id')
   @HttpCode(HttpStatus.OK)
   async getTokenAmount(
@@ -69,6 +78,15 @@ export class ExchangesController {
     @Body() body: GetAmountDto
   ): Promise<any> {
     return this.exchangesService.getTokenAmount(id, body);
+  }
+
+  @Get('/token-amount/slippage/:id')
+  @HttpCode(HttpStatus.OK)
+  async getTokenAmountSlippage(
+    @Param('id') id: string,
+    @Body() body: GetAmountDto
+  ): Promise<any> {
+    return this.exchangesService.getTokenAmountSlippage(id, body);
   }
 
   @Post('/eth-to-token/:id')
