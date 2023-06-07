@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from './config';
 import { TokensModule } from './tokens';
 import { UsersModule } from './users';
 import { ExchangesModule } from './exchanges';
+import { OrdersModule } from './orders';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { ExchangesModule } from './exchanges';
     }),
     TokensModule,
     UsersModule,
-    ExchangesModule
+    ExchangesModule,
+    OrdersModule
   ],
   controllers: [],
   providers: [],
