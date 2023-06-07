@@ -62,7 +62,7 @@ export class ExchangesController {
     return this.exchangesService.getEthAmount(id, body);
   }
 
-  @Get('/eth-amount/slippage/:id')
+  @Post('/eth-amount/slippage/:id')
   @HttpCode(HttpStatus.OK)
   async getEthAmountSlippage(
     @Param('id') id: string,
@@ -80,7 +80,7 @@ export class ExchangesController {
     return this.exchangesService.getTokenAmount(id, body);
   }
 
-  @Get('/token-amount/slippage/:id')
+  @Post('/token-amount/slippage/:id')
   @HttpCode(HttpStatus.OK)
   async getTokenAmountSlippage(
     @Param('id') id: string,
