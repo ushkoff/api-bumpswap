@@ -27,17 +27,8 @@ export class OrdersRepository {
   }
 
   async findByExchangeId(id: string): Promise<Order> {
-    try {
-      const order = await this.orderModel.findOne({ exchangeId: id }).lean().exec();
-
-      if (!order) {
-        throw new Error('Order not found');
-      }
-
-      return order;
-    } catch (error) {
-      throw new Error('Failed to retrieve order by exchangeId.');
-    }
+    const order = await this.orderModel.findOne({ exchangeId: id }).lean().exec();
+    return order;
   }
 
   async delete(id: string): Promise<string> {
